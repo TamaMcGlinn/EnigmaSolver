@@ -153,23 +153,21 @@ procedure Main is
     end;
   end solve;
 
-  function plus_ints(lhs : Integer; rhs : Integer) return Integer is
-  begin
-    return lhs + rhs;
-  end plus_ints;
+  --  you can reference operator subprograms
+  --  (using the Access attribute) as long as they're not intrinsic.
+  function "+" (Lhs, Rhs : Integer) return Integer is
+    (Standard."+" (Lhs, Rhs));
 
-  function min_ints(lhs : Integer; rhs : Integer) return Integer is
-  begin
-    return lhs - rhs;
-  end min_ints;
+  function "-" (Lhs, Rhs : Integer) return Integer is
+    (Standard."-" (Lhs, Rhs));
 
   operator : Character := line3(line3'Last);
 
   function getCheckingFunction return binary_int_operator is
   begin
     case operator is
-      when '+' => return plus_ints'Access; --TODO figure out how to use Integer's "+" directly;
-      when '-' => return min_ints'Access;  -- SO question: https://stackoverflow.com/questions/56587574/how-can-you-store-an-access-to-integers-operators-in-ada
+      when '+' => return "+"'Access;
+      when '-' => return "-"'Access;
       when others => raise Program_Error with "Unsupported operator " & operator & " requested.";
     end case;
   end getCheckingFunction;
